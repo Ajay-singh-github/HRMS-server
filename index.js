@@ -19,7 +19,8 @@ app.get('/', (req, res) => {
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   'http://localhost:5173',
-  "https://hrms-frontend-omega.vercel.app/"
+  "https://hrms-frontend-omega.vercel.app/",
+  "https://developerajay.diy"
 ];
 
 app.use(cors({
