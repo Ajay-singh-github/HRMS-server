@@ -135,27 +135,50 @@ const getCandidatesByPosition = async (req, res) => {
 };
 
 const searchCandidates = async (req, res) => {
-    try {
-        const { q } = req.query;
-        if (!q) {
-            return res.status(400).json({ success: false, message: 'Query parameter "q" is required' });
-        }
+  try {
+    const { search, status, position } = req.query;
 
-        const regex = new RegExp(q, 'i');  // case-insensitive search
-        const candidates = await Candidate.find({
-            $or: [
-                { fullName: regex },
-                { email: regex },
-                { phone: regex },
-                { position: regex }
-            ]
-        });
+    const filter = {};
 
-        res.status(200).json({ success: true, candidates });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Search failed', error: error.message });
+    if (search) {
+      const regex = new RegExp(search, 'i'); // case-insensitive search
+      filter.$or = [
+        { fullName: regex },
+        { email: regex },
+        { phone: regex },
+        { position: regex },
+        { status: regex },
+        { resume: regex },
+        { attendanceStatus: regex }
+      ];
     }
+
+    if (status && status !== 'Status') {
+      filter.status = status;
+    }
+
+    if (position && position !== 'Position') {
+      filter.position = position;
+    }
+
+    const candidates = await Candidate.find(filter);
+
+    res.status(200).json({
+      success: true,
+      count: candidates.length,
+      candidates,
+    });
+  } catch (error) {
+    console.error('Search error:', error.message);
+    res.status(500).json({
+      success: false,
+      message: 'Search failed',
+      error: error.message,
+    });
+  }
 };
+
+
 
 const deleteCandidate = async (req, res) => {
     try {

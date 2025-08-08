@@ -14,10 +14,10 @@ const router = Router();
 
 router.post('/', createAdmin);
 router.post('/login', loginAdmin);
-router.get('/', getAllAdmins);
+router.get('/',authenticate, getAllAdmins);
 router.get('/:id', getAdminById);
-router.put('/', updateAdmin);
-router.delete('/', deleteAdmin);
+router.put('/',authenticate, updateAdmin);
+router.delete('/',authenticate, deleteAdmin);
 router.get('/verify/verify', authenticate, async (req, res) => {
   res.status(200).json({
     message: 'Welcome to protected dashboard',
